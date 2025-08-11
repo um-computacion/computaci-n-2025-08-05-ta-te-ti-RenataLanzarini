@@ -55,3 +55,7 @@ class Tablero:
 
     def contar_fichas(self, ficha):
         return sum(celda == ficha for fila in self.contenedor for celda in fila)
+
+    def es_vacia(self, fila, col):
+        self._validar_rango(fila, col)
+        return self.contenedor[fila][col] == ""
