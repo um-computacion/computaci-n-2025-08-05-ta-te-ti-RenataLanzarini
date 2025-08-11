@@ -1,0 +1,53 @@
+import unittest
+from tateti import Tateti
+from tablero import PosOcupadaException, MovimientoInvalidoException
+
+class TestTatetiBasico(unittest.TestCase):
+    def test_empieza_x(self):
+        juego = Tateti()
+        self.assertEqual(juego.jugador_actual, "X")
+
+    def test_colocar_cambia_turno(self):
+        juego = Tateti()
+        juego.jugar(0, 0)  
+        self.assertEqual(juego.jugador_actual, "O")
+
+    def test_posicion_ocupada_no_pierde_turno(self):
+        juego = Tateti()
+        juego.jugar(0, 0)  
+        juego.jugar(0, 0)  
+        self.assertEqual(juego.jugador_actual, "O")
+
+    def test_gana_x_en_fila(self):
+        juego = Tateti()
+        juego.jugar(0, 0)  
+        juego.jugar(1, 0)  
+        juego.jugar(0, 1)  
+        juego.jugar(1, 1)  
+        juego.jugar(0, 2)  
+        self.assertEqual(juego.ganador, "X")
+        self.assertTrue(juego.juego_terminado())
+
+class TestTatetiMovimiento(unittest.TestCase):
+    def test_movimiento_invalido_no_pierde_turno(self):
+        juego = Tateti()
+        
+        juego.jugar(0,0); juego.jugar(1,0)
+        juego.jugar(0,1); juego.jugar(1,1)
+        juego.jugar(2,2); juego.jugar(1,2)
+        
+        juego.jugar(fila_destino=2, col_destino=0, fila_origen=1, col_origen=0)
+        self.assertEqual(juego.jugador_actual, "X")
+
+    def test_mover_y_ganar(self):
+        juego = Tateti()
+        juego.jugar(0,0); juego.jugar(1,0)
+        juego.jugar(0,2); juego.jugar(1,1)
+        juego.jugar(2,2); juego.jugar(2,0)
+        # X mueve ficha para completar fila
+        juego.jugar(fila_destino=0, col_destino=1, fila_origen=2, col_origen=2)
+        self.assertEqual(juego.ganador, "X")
+        self.assertTrue(juego.juego_terminado())
+
+if __name__ == "__main__":
+    unittest.main()
